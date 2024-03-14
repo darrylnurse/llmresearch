@@ -4,4 +4,4 @@ Run
 ```
 node modules/file-name.js
 ```
-to run a file.
+in terminal to run a file.
