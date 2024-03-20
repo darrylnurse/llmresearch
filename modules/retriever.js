@@ -5,6 +5,8 @@ import {Document} from "@langchain/core/documents";
 
 import {createStuffDocumentsChain} from "langchain/chains/combine_documents";
 
+import {CheerioWebBaseLoader} from "langchain/document_loaders/web/cheerio";
+
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -26,12 +28,18 @@ const chain = await createStuffDocumentsChain({
     prompt,
 })
 
-const doc1 = new Document({
-  pageContent: "LCEL is a declarative way to compose chains. LCEL was designed from day 1 to support putting prototypes in production, with no code changes, from the simplest “prompt + LLM” chain to the most complex chains.",
-})
+// const doc1 = new Document({ //manually creates a document object from text
+//   pageContent: "LCEL is a declarative way to compose chains. LCEL was designed from day 1 to support putting prototypes in production, with no code changes, from the simplest “prompt + LLM” chain to the most complex chains.",
+// })
+
+const loader = new CheerioWebBaseLoader( //creates document object by scraping a webpage
+    "https://dev.to/eteimz/understanding-langchains-recursivecharactertextsplitter-2846",
+);
+const docs = await loader.load();
+console.log(docs);
 
 const response = await chain.invoke({
-  input: "What is LCEL?",
-  context: [doc1],
+  input: "What is a Recursive Text Splitter?",
+  context: docs,
 });
 console.log(response);

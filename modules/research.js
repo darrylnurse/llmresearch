@@ -1,6 +1,6 @@
 //research code is found here
 
-import {ChatOpenAI, OpenAI, OpenAIEmbeddings} from "@langchain/openai";
+import {ChatOpenAI, OpenAIEmbeddings} from "@langchain/openai";
 import {HNSWLib} from "@langchain/community/vectorstores/hnswlib";
 import {RecursiveCharacterTextSplitter} from "langchain/text_splitter";
 import {TextLoader} from "langchain/document_loaders/fs/text";
@@ -43,7 +43,10 @@ const retrieveDocuments = async query => await vectorStoreRetriever.getRelevantD
 
 //construct prompt to feed into LLM
 const prompt = ChatPromptTemplate.fromTemplate(`
-    "You are an informative, brilliant AI Assistant who is great at giving facts about countries. Answer the user's question correctly, specifically for the given country."
+    You are an informative, brilliant AI Assistant who is great at giving facts about countries. 
+    You are ONLY able to draw information from the documents given by context.
+    Answer the user's question correctly, specifically for the given country.
+    
     Context: {context}
     Question: {input}
     Country: {country}
@@ -66,6 +69,8 @@ const response = await chain.invoke({
   context: retrieveDocuments(country),
 });
 
+console.log(response);
+
 // GREENLAND 7725 TOKENS ???????? worked
 // IONIA 7926 TOKENS ... didnt work, fictional country
 // HOW DO I TIE A TIE? 8040 TOKENS !!!! country: Iceland -> just returned information about iceland
@@ -75,6 +80,12 @@ const response = await chain.invoke({
 //might need to add a unique text document to vector store
 //this ensures llm is NOT skipping over vs and searching straight from its own database
 //🥲🥲🥲🥲
+
+//gpt 3.5 has up to june 2023
+//get recent text file, or file of custom facts
+//test gpt if it can answer before adding
+
+//or systemPrompt message to ONLY draw information from context -> PERFECT
 
 //add text file as vector store
 //add chunk splitter
