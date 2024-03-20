@@ -14,7 +14,7 @@ const model = new ChatOpenAI({
 });
 
 // const prompt = ChatPromptTemplate.fromTemplate(
-//     "You are a comedian with a dark sense of humor. Tell a joke based on the following word {input}"
+//     "You are a comedian with a bad sense of humor. Tell a joke based on the following word {input}"
 // );
 //
 // const prompt = ChatPromptTemplate.fromMessages([
@@ -39,28 +39,31 @@ const model = new ChatOpenAI({
 //
 // console.log(await noInputPrompt.format());
 
-const systemTemplate = "You are a kind assistant that translates {input} to {output}.";
-const humanTemplate = "{text}";
+// const systemTemplate = "You are a kind assistant that translates {input} to {output}.";
+// const humanTemplate = "{text}";
+//
+// const chatPrompt = ChatPromptTemplate.fromMessages([
+//     ["system", systemTemplate],
+//     ["human", humanTemplate],
+// ]);
+//
+// const chatChain = chatPrompt.pipe(model);
+//
+// const chatResult = await chatChain.invoke({
+//   input: "Formal English",
+//   output: "Bajan Slang",
+//   text: "How are you doing?",
+// });
+//
+// console.log(chatResult);
 
-const chatPrompt = ChatPromptTemplate.fromMessages([
-    ["system", systemTemplate],
-    ["human", humanTemplate],
+const newPrompt = ChatPromptTemplate.fromMessages([
+    ["system", "You are a politician. Speak as if you know about the following word, but you actually dont."],
+    ["human", "{word}"]
 ]);
 
-const formattedChatPrompt = await chatPrompt.formatMessages({
-  "input": "Formal English",
-  "output": "Bajan Slang",
-  "text": "How are you doing?",
-});
+const chain = newPrompt.pipe(model);
 
-const chatChain = chatPrompt.pipe(model);
-
-const chatResult = await chatChain.invoke({
-  input: "Formal English",
-  output: "Bajan Slang",
-  text: "How are you doing?",
-});
-
-console.log(chatResult);
+console.log(await chain.invoke({word: "lettuce"}));
 
 
