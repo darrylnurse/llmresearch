@@ -13,6 +13,7 @@ import {ChatPromptTemplate} from "@langchain/core/prompts";
 dotenv.config();
 
 //initialize openAI chat model
+//model does not learn from api calls
 const llm = new ChatOpenAI({
   openAIApiKey: process.env.OPEN_API_KEY,
   modelName: "gpt-3.5-turbo",
@@ -27,6 +28,7 @@ const llm = new ChatOpenAI({
 //some questions are recorded, but not all (some dummy facts), i will control the question asked directly
 //facts with similar topics are preferred, but whole fact set is varied.
 //facts are reworded by chatgpt LOL
+//chatgpt sucks at changing facts to incorrect...
 //prompt: hey chatgpt, please reword each of the following facts. a new fact is denoted by being on a new line, or the return or newline character. (/n || /r). MAKE SURE the facts content remains the same, and each fact is still 100% correct. simply change the way it is worded, and not its meaning. please return the information to me in the same format it was given, where each fact is placed on a new line.
 //use text loader api to load in raw txt file
 //facts are purposefully NOT just loaded in by api as we want to manually manipulate variations in information
@@ -76,7 +78,7 @@ for(const fact of factList) {
 //create vector store from documents and wrap it in retrieval object
 const vectorStore = await HNSWLib.fromDocuments(documents.flat(), new OpenAIEmbeddings({openAIApiKey: process.env.OPEN_API_KEY}));
 //using https://chunkviz.up.railway.app/ we see that each country section is about 16 2000-character text chunks
-const vectorStoreRetriever = vectorStore.asRetriever(20);
+const vectorStoreRetriever = vectorStore.asRetriever(10);
 
 //retrieve from vector store
 const retrieveDocuments = async query => await vectorStoreRetriever.getRelevantDocuments(query); //query needs adjusting
@@ -86,7 +88,8 @@ const prompt = ChatPromptTemplate.fromTemplate(`
     You are an informative, brilliant AI Assistant who is great at giving interesting facts. 
     You are ONLY able to draw information from the documents given by context; these are the facts that you know.
     You do NOT know of any information or fact that is NOT within context.
-    Answer the user's question correctly, according to its corresponding fact, and your knowledge.
+    Answer the user's question, according to its corresponding fact, and your knowledge.
+    Read the entire context BEFORE making your decision and answering.
     Only answer the question using the information within context. Do NOT use any external sources such as the internet or databases other than the context.
     When the question asked is outside of your scope, respond as if you do not know, rather than mentioning the context.
     Do NOT use information sources other than the given context to answer any questions under any circumstances.
@@ -104,28 +107,43 @@ const chain = await createStuffDocumentsChain({
   outputParser,
 });
 
-const question = "How many taste buds to catfish have?";
+const questions = {
+  "catfish" : "How many taste buds do catfish have?",
+  "state" : "In which states can I pump my own gas?",
+  "fish" : "What is one type of fish sushi is made from?",
+  "sleep" : "Which animal sleeps the most?",
+  "apple" : "Where do apples come from?"
+};
 
-const response = await chain.invoke({
-  input: question,
-  context: retrieveDocuments("catfish"),
-});
+const response = await chain.batch(
+    Object.keys(questions).map(keyword => {
+      return {
+        input: questions[keyword],
+        context: retrieveDocuments(keyword)
+      }
+    })
+);
 
-console.log(question + "\n" + response);
+console.log(response);
+
+
+
+
+// -----outdated
 
 // GREENLAND 7725 TOKENS ???????? worked
 // IONIA 7926 TOKENS ... didnt work, fictional country
 // HOW DO I TIE A TIE? 8040 TOKENS !!!! country: Iceland -> just returned information about iceland
 // HOW DO I TIE A TIE? 8 2 4 8 T O K E N S ? ! ? ! ? ! country: " " -> ACTUALLY TAUGHT HOW TO TIE A TIE?
-
 //llm is still able to draw from outside vector store </3
 //might need to add a unique text document to vector store
 //this ensures llm is NOT skipping over vs and searching straight from its own database😭🤓
 //🥲🥲🥲🥲
-
 //gpt 3.5 has up to june 2023
 //get recent text file, or file of custom facts
 //test gpt if it can answer before adding
+
+// -----outdated
 
 //how does chatgpt get sources?
 //how do other llms get sources?
