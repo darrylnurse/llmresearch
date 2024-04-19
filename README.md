@@ -1,10 +1,14 @@
+# Title: 
+Data Integrity in Large Language Model Retrieval Augmented Generation
+
 # Abstract
 
-This Research Project aims to analyze the accuracy of Large Language Model (LLM), and the ability to maintain data accuracy and integrity, the project focuses into the ability of Langchain powered LLM models to retrieve and precisely generate consistent information. The study is to provide limited and controlled textual data to the Model and assess the success rate through the  factual data returned to the user. Ultimately, this study aims to produce quantifiable insights into the dependability, constraints, and range of information sources of existing LLMs.
+The focus of this research is to analyze the ability of Large Language Models (LLMs) to maintain data accuracy and integrity during Retrieval Augmented Generation. By investigating their capabilities to generate consistent information and assessing the success rate of factual data returned to the user, this project seeks to provide insight into the reliability of LLMs in text-based and chat-based contexts.
 
 # Introduction
 
-LLM models lends to be the most prominent applications of Generative Artificial Intelligence (Gen AI) which is influenced through the principles of Natural Language Processing (NLP). These models are trained on vast amounts of textual data from the internet and capable of providing relational context between commonly occurring words, sentences and language structures. The textual data originates from existing documents, books and articles written by human. The LLM models architecture is from Deep Learning (DL) technology which can replicate the human mind to retrieve the texts through the prompt engineering from human. OpenAI’s ChatGPT and Google’s Gemini are the popular models with such capabilities where the learning data is comprised from hundreds of gigabytes of text information derived from the internet. The LLM models create a chat-like interface with human through collecting input data from prompt engineering  and produces its own output. While this great expanse of data sources may broaden the effective scope of text generation, it also poses a risk to the factuality of information.
+Large Language Models lend themselves to be the most prominent applications of Generative Artificial Intelligence (Gen AI). These models are trained on vast amounts of textual data from various sources and can provide relational and semantic context between commonly occurring words, sentences and language structures. The textual data originates from existing websites, documents, books and articles, and serves as the scope of knowledge at which the LLM can operate. Vast sources of information allow them to emulate a broad spectrum of human language in various contexts. However, in a dynamic informational age, this has its limitations. To incorporate new data, models must be retrained, consuming further resources and posing a temporary solution. With Retrieval Augmented Generation (RAG), LLMs can draw data from sources they were not exposed to during training, enhancing their text generation capabilities and increasing the extent of their knowledge. While this great expanse of static and dynamic data sources may broaden the effective scope of text generation, it also poses a risk to the factuality of information.
+
 
 # Methods
 
@@ -21,8 +25,8 @@ Embedded transformed text data into a vector representation to store data in mul
 
 # Results
 
-The OpenAI API is being used as an LLM to collect the output result. The results were produced using 8 text files containing random facts derived from Google, 6 of which were the same recurring correct facts worded various ways, and 3 of which contained the same 'facts' but with erroneous information. A ratio of correct to incorrect files were determined as an experimental variable (ranging from 6 correct files and 0 incorrect files, to 3 correct files and 3 incorrect files. 
-The prompt received queries related to information that the LLM was able to access as input, and the LLM model ran 10 times. From these runs, the percentage of correct answers was derived.
+The OpenAI API is being used as an LLM to collect the output result, with Langchain as the interface to embed and query text documents. The results were produced using 8 text files containing random facts, 6 of which were the same recurring correct facts worded various ways, and 3 of which contained incorrect information following the same structure. A ratio of correct to incorrect files were determined as an experimental variable (ranging from 6 correct files and 0 incorrect files, to 3 correct files and 3 incorrect files. The prompt received queries related to information that the LLM was able to access as input, and the LLM model ran 10 times. From these runs, the percentage of correct answers was derived.
+
 
 
 | Fact Query                                   |       6-0     |    5-1    |    4-2  |    3-3   |
